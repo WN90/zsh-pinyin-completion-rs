@@ -26,7 +26,7 @@
 
 ```bash
 # 克隆到 Oh My Zsh 自定义插件目录
-git clone https://github.com/YOUR_USERNAME/zsh-pinyin-completion-rs ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-pinyin-completion-rs
+git clone https://github.com/WN90/zsh-pinyin-completion-rs ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-pinyin-completion-rs
 
 # 进入目录并构建二进制
 cd ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-pinyin-completion-rs
@@ -42,19 +42,19 @@ plugins=(... zsh-pinyin-completion-rs)
 ### Zinit
 
 ```zsh
-zinit light YOUR_USERNAME/zsh-pinyin-completion-rs
+zinit light WN90/zsh-pinyin-completion-rs
 ```
 
 ### Antigen
 
 ```zsh
-antigen bundle YOUR_USERNAME/zsh-pinyin-completion-rs
+antigen bundle WN90/zsh-pinyin-completion-rs
 ```
 
 ### 手动安装
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zsh-pinyin-completion-rs
+git clone https://github.com/WN90/zsh-pinyin-completion-rs
 cd zsh-pinyin-completion-rs
 ./install.sh build
 
@@ -141,7 +141,7 @@ $ ls js<Tab>       # 补全为: 江苏.txt
 ## 从源码构建
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zsh-pinyin-completion-rs
+git clone https://github.com/WN90/zsh-pinyin-completion-rs
 cd zsh-pinyin-completion-rs
 cargo build --release
 ```
