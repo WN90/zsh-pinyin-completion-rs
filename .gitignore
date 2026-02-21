@@ -1,0 +1,22 @@
+# Build artifacts
+/target/
+/bin/
+
+# Node (if any)
+node_modules/
+package*.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files
+*.test
+test_dir/

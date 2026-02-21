@@ -1,0 +1,14 @@
+[package]
+name = "zsh-pinyin-completion-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Pinyin completion for zsh"
+authors = ["zsh-pinyin-completion-rs contributors"]
+license = "GPL-3.0"
+
+[dependencies]
+ib-matcher = { version = "0.4.0", features = ["pinyin"] }
+
+[[bin]]
+name = "zsh-pinyin-filter"
+path = "src/main.rs"
