@@ -33,12 +33,14 @@ fn parse_pinyin_notation_env() -> PinyinNotation {
         .unwrap_or_default();
     let mut notation = PinyinNotation::empty();
     let mut shuangpin = Option::<PinyinNotation>::None;
+    let mut has_quanpin = false;
 
     for mode in env_val.split(',') {
         let mode = mode.trim();
         match mode {
             "quanpin" | "Quanpin" => {
                 notation |= PinyinNotation::Ascii;
+                has_quanpin = true;
             }
             "abc" | "ShuangpinAbc" => {
                 shuangpin.get_or_insert(PinyinNotation::DiletterAbc);
@@ -68,7 +70,9 @@ fn parse_pinyin_notation_env() -> PinyinNotation {
         notation = PinyinNotation::Ascii;
     }
 
-    if notation == PinyinNotation::Ascii {
+    // Always enable first letter matching when quanpin is enabled
+    // This allows single letter like 'x' to match '下' (xia), 'z' to match '桌' (zhuo)
+    if has_quanpin || notation == PinyinNotation::Ascii {
         notation |= PinyinNotation::AsciiFirstLetter;
     }
 
