@@ -110,11 +110,14 @@ fn main() {
                 continue;
             }
         };
-        // Ignore Pure English Path
+        // For pure English paths, use simple prefix matching
+        // For paths with Chinese characters, use pinyin matching
         if is_pure_english_path(&candidate) {
-            continue;
-        }
-        if matcher.is_match(candidate.as_str()) {
+            // Simple prefix match for English paths
+            if candidate.to_lowercase().starts_with(&input.to_lowercase()) {
+                println!("{}", candidate);
+            }
+        } else if matcher.is_match(candidate.as_str()) {
             println!("{}", candidate);
         }
     }

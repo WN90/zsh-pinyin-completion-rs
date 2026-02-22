@@ -17,3 +17,8 @@
 
 # Whether to enable pinyin completion (can be used to temporarily disable)
 : ${ZSH_PINYIN_ENABLED:=1}
+
+# Enable menu selection for pinyin completion
+# When candidates have no common prefix, pressing TAB cycles through them
+# Set to empty string to disable: ZSH_PINYIN_MENU_SELECT=""
+: ${ZSH_PINYIN_MENU_SELECT:=1}
