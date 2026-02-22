@@ -45,14 +45,32 @@ _zsh_pinyin_complete() {
     local -a candidates
     local glob_dir="${dir_prefix:-.}"
 
-    # Get all files/directories, including hidden ones if needed
+    # Determine if we should only show directories based on completion context
+    # zsh provides context through:
+    # - $curcontext: e.g., "::complete:cd:*"
+    # - $service: the command name
+    # - $words[1]: the first word on command line
+    local dirs_only=0
+
+    # Check curcontext first (most reliable)
+    if [[ "$curcontext" == *:cd:* ]] || [[ "$curcontext" == *:pushd:* ]] || \
+       [[ "$curcontext" == *:rmdir:* ]] || [[ "$curcontext" == *:chdir:* ]]; then
+        dirs_only=1
+    # Fallback to service variable
+    elif [[ "$service" == "cd" ]] || [[ "$service" == "pushd" ]] || \
+         [[ "$service" == "rmdir" ]] || [[ "$service" == "chdir" ]]; then
+        dirs_only=1
+    # Fallback to checking command line
+    elif [[ "${words[1]}" == "cd" ]] || [[ "${words[1]}" == "pushd" ]] || \
+         [[ "${words[1]}" == "rmdir" ]] || [[ "${words[1]}" == "chdir" ]]; then
+        dirs_only=1
+    fi
+
+    # Get all files/directories, including hidden ones
     if [[ -n "$dir_prefix" ]]; then
-        # For paths with directory prefix, list files in that directory
         candidates=(${glob_dir}*(N))
-        # Also include hidden files if the word starts with a letter that could match hidden files
         candidates+=(${glob_dir}.*(N))
     else
-        # For current directory
         candidates=(*(N) .*(N))
     fi
 
@@ -81,15 +99,28 @@ _zsh_pinyin_complete() {
             fi
         done
 
-        # Build display array
-        local -a displays
+        # Build arrays for directories and files with proper suffix handling
+        local -a files dirs all_matches displays
+        local full_path display_item
         for item in "${filtered[@]}"; do
-            displays+=("$item")
+            full_path="${dir_prefix}${item}"
+            if [[ -d "$full_path" ]]; then
+                # Directory: add with / suffix, no space after
+                dirs+=("${item}/")
+                displays+=("${item}/")
+            elif (( ! dirs_only )); then
+                # File: only add if not in dirs_only mode
+                files+=("$item")
+                displays+=("$item")
+            fi
         done
 
-        # Use _wanted for proper menu handling with mixed prefixes
+        # Directories first, then files
+        all_matches=("${dirs[@]}" "${files[@]}")
+
+        # Use -S '' to prevent auto-adding space, we handle suffix manually
         _wanted pinyin-matches expl 'pinyin match' \
-            compadd -U -V pinyin-matches -d displays -a filtered
+            compadd -S '' -U -V pinyin-matches -d displays -a all_matches
 
         if (( has_chinese )); then
             # With Chinese results: first TAB shows list with first item highlighted
