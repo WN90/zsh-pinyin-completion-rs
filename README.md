@@ -87,6 +87,18 @@ source /path/to/zsh-pinyin-completion-rs/zsh-pinyin-completion-rs.plugin.zsh
 | `thunisoft` | 紫光拼音 | - |
 | `zrm` | 自然码 | - |
 
+#### 全拼模式包含简拼
+
+`quanpin` 模式自动包含简拼（首字母）匹配：
+
+| 输入 | 匹配 | 说明 |
+|------|------|------|
+| `zg` | `中国` | 首字母 `z` + `g` |
+| `zs` | `浙江`、`证书` | 首字母 `z` + `s` |
+| `z` | `浙江`、`桌面`、`自己` | 所有 `z` 开头的字 |
+| `zhongguo` | `中国` | 完整拼音 |
+| `zguo` | `中国` | 首字母 + 完整拼音 |
+
 可以组合多个方案：
 
 ```zsh
