@@ -71,6 +71,14 @@ fi
 # The pinyin completer will only activate for inputs that look like pinyin
 zstyle ':completion:*' completer _zsh_pinyin_complete ${_zsh_pinyin_orig_completer[@]}
 
+# Enable menu selection for pinyin matches
+# This allows cycling through candidates with TAB when there's no common prefix
+if [[ "${ZSH_PINYIN_MENU_SELECT:-1}" == "1" ]]; then
+    zstyle ':completion:*' menu select
+    # Auto start menu selection when there are multiple matches
+    zstyle ':completion:*:*:pinyin-matches' menu select=2
+fi
+
 # Provide a function to toggle pinyin completion
 zsh-pinyin-toggle() {
     if [[ "${ZSH_PINYIN_ENABLED:-1}" == "1" ]]; then

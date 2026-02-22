@@ -8,6 +8,15 @@ _zsh_pinyin_is_pinyin_input() {
     [[ "$input" =~ '^[a-z]+$' && ${#input} -ge ${ZSH_PINYIN_MIN_LENGTH:-1} ]]
 }
 
+# Check if a string contains Chinese/CJK characters
+_zsh_pinyin_has_chinese() {
+    local str="$1"
+    # Remove all ASCII printable characters
+    # If anything remains, it contains non-ASCII (likely Chinese)
+    local non_ascii="${str//[a-zA-Z0-9_\-\.\/\~]/}"
+    [[ -n "$non_ascii" ]]
+}
+
 # Main pinyin completion function
 _zsh_pinyin_complete() {
     # Check if pinyin completion is enabled
@@ -62,10 +71,36 @@ _zsh_pinyin_complete() {
 
     # If we have matches, add them to completion
     if (( ${#filtered} > 0 )); then
-        # Add matches with appropriate options
-        # -U means don't do any special character handling
-        # -a means the matches are in an array
-        compadd -U -a filtered
+        # Check if any match contains Chinese characters
+        local has_chinese=0
+        local item
+        for item in "${filtered[@]}"; do
+            if _zsh_pinyin_has_chinese "$item"; then
+                has_chinese=1
+                break
+            fi
+        done
+
+        # Build display array
+        local -a displays
+        for item in "${filtered[@]}"; do
+            displays+=("$item")
+        done
+
+        # Use _wanted for proper menu handling with mixed prefixes
+        _wanted pinyin-matches expl 'pinyin match' \
+            compadd -U -V pinyin-matches -d displays -a filtered
+
+        if (( has_chinese )); then
+            # With Chinese results: first TAB shows list with first item highlighted
+            # but command line keeps user input
+            # menu:1 means start from first item (default selection)
+            compstate[insert]="menu:1"
+        else
+            # No Chinese results: normal menu selection
+            compstate[insert]="menu"
+        fi
+
         return 0
     fi
 
